@@ -1,0 +1,31 @@
+.field-style{
+    border: 1px solid white;
+    border-radius: 20px;
+    box-shadow: 5px 5px 5px #99e6d8;
+}
+
+.sticky-style{
+    position: sticky;
+    top: 0;
+    background-color: #99e6d8;
+    color: #fe3b20;
+}
+.legend{
+    background-color: white;
+    width: 30%;
+    border-radius: 10px;
+    color: midnightblue;
+    text-align:center;
+    box-shadow:2px 2px 2px white;
+    border:1px solid midnightblue;
+}
+
+#admin,#admin tr,#admin td{
+    border: 1px solid white;
+    padding: 5px;
+    
+}
+#admin{
+    width: 90%;
+    margin: 10px auto;
+}

@@ -1,24 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
+import React,{useState} from 'react';
 import './App.css';
+import SignIn from './views/SignIn';
+import Admin from './views/Admin';
+import Game from './views/Game';
+import {Router} from '@reach/router';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import TCContext from './contexts/TcContext';
 
 function App() {
+  const [tcId,setTcId] = useState("");
+  const [userId,setUserId] = useState("");
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="main-bg h-100">
+      
+      <TCContext.Provider value={{tcId,setTcId,userId,setUserId}}>
+        <Router>
+            <SignIn path="/" />
+            <Admin path="/facilitator" />
+            <Game path="/scenario" />
+        </Router>
+
+      </TCContext.Provider>
+      
     </div>
   );
 }
