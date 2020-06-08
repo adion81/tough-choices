@@ -1,8 +1,7 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState} from 'react';
 import HouseCard from './HouseCard';
 
 const ToughChoice = props => {
-    const [tc,setTC] = useState(null);
     const [houses] = useState([
         {
             id : "home",
@@ -59,6 +58,8 @@ const ToughChoice = props => {
                                         costYellow={h.costYellow} 
                                         houseHold={h.houseHold}
                                         users={props.users.filter(u => u.position === h.id)}
+                                        handleHouseMove={props.handleHouseMove}
+                                        id={h.id}
                                     />)
             }
         </div>

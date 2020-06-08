@@ -8,8 +8,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import TCContext from './contexts/TcContext';
 
 function App() {
-  const [tcId,setTcId] = useState("");
-  const [userId,setUserId] = useState("");
+  const [tcId,setTcId] = useState(localStorage.getItem("tcKey") || "");
+  const [userId,setUserId] = useState(localStorage.getItem("userKey") || "");
   return (
     <div className="main-bg h-100">
       

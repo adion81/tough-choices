@@ -36,7 +36,10 @@ const SignIn = props => {
                     console.log(res.data.msg)
                 }
                 else{
-                    context.setUserId(res.data._id);
+                    console.log(res.data.userId)
+                    localStorage.setItem("tcKey",accessCode);
+                    localStorage.setItem("userKey",res.data.userId);
+                    context.setUserId(res.data.userId);
                     context.setTcId(accessCode);
                     socket.emit("added-user",{id:accessCode})
                     setUser({

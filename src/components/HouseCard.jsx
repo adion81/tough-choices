@@ -1,10 +1,10 @@
 import React from 'react';
-import img from '../assets/img/placeholder-image.png';
+// import img from '../assets/img/placeholder-image.png';
 import Avatar from './Avatar';
 const HouseCard = props => {
-    const {title,costGreen, costYellow,houseHold,users} = props;
+    const {title,costGreen, costYellow,houseHold,users,id,handleHouseMove} = props;
     return (
-        <div className="card p-0 col-3 mx-1 my-2 mx-lg-2 my-lg-4">
+        <div onClick={(e) => handleHouseMove(e,id)} style={{height: "300px"}}className="card p-0 col-3 mx-1 my-2 mx-lg-2 my-lg-4">
             <div className="card-header">
                 <h5 className="card-title">{title}</h5>
             </div>
@@ -15,7 +15,12 @@ const HouseCard = props => {
             </div>
             <div className="card-footer">
                 {
-                    users.map((u,i) => <Avatar key={i} initials={u.initials} color={u.color} />)
+                    users.map((u,i) => <Avatar 
+                                            key={i} 
+                                            initials={u.initials} 
+                                            color={u.color}
+                                            users={users}
+                                        />)
                 }
             </div>
         </div>

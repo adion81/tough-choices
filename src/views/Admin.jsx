@@ -22,6 +22,15 @@ const Admin = props => {
             }
         }
     }
+    const handleDeactivate = (id) => {
+        const temp = {...tc};
+        temp.active = false;
+        axios.put(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/deactivate/${id}`,temp)
+            .then(res => {
+                localStorage.removeItem("tcKey");
+            })
+            .catch(err => console.log(err))
+    }
 
 
     socket.on("update-tc", data => {
@@ -41,7 +50,10 @@ const Admin = props => {
 
     const handleNewTC = () => {
         axios.post("http://localhost:8000/api/tc")
-            .then(res => setTc(res.data))
+            .then(res => {
+                localStorage.setItem("tcKey",res.data._id);
+                setTc(res.data)
+            })
             .catch(err => console.log(err));
     }
     return (
@@ -88,7 +100,11 @@ const Admin = props => {
                                 style={{boxShadow:"2px 2px 2px #99e6d8"}}
                                 onClick={handleNewTC}
                             >Create Tough Choice</button> :
-                            <button className="btn btn-danger mx-auto d-block" style={{boxShadow:"2px 2px 2px #99e6d8"}}>Wrap Up</button>
+                            <button 
+                                className="btn btn-danger mx-auto d-block" 
+                                style={{boxShadow:"2px 2px 2px #99e6d8"}}
+                                onClick={handleDeactivate}
+                            >Wrap Up</button>
                     }
                     <table id="admin">
                         <tr >

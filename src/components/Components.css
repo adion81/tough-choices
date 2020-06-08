@@ -20,6 +20,7 @@
     border:1px solid midnightblue;
 } */
 .avatar{
+    display: inline-block;
     width: 40px;
     /* height: 50px; */
     border: 2px solid black;
@@ -36,4 +37,17 @@
 }
 span{
     font-size: small;
+}
+.decision{
+    position: absolute;
+    top: 100;
+    left:100;
+    z-index: 1000;
+    width: 50%;
+    background-color: rgba(70, 15, 15, 0.719);
+    color: white;
+    border: 2px solid white;
+    border-radius: 10px;
+    text-align: center;
+    padding: 10px;
 }
