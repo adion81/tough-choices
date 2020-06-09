@@ -3,6 +3,7 @@ import Profile from '../components/Profile';
 import ToughChoice from '../components/ToughChoice';
 import TCContext from '../contexts/TcContext';
 import Decision from '../components/Decision';
+import PayDay from '../components/PayDay';
 import axios from 'axios';
 import io from 'socket.io-client';
 
@@ -13,7 +14,13 @@ const Game = props => {
     const [chose,setChose] = useState(false);
     const context = useContext(TCContext);
     const [tc,setTC] = useState(null);
-    const [isDeciding] = useState(false);
+    const [isDeciding,setIsDeciding] = useState(false);
+    const [isPayDay,setIsPayDay] = useState(false);
+    const [movingTo,setMovingTo] = useState({
+        name: "",
+        costM: 0,
+        costG: 0,
+    });
     const [user, setUser] = useState([
         {
             name: "Melissa Picciola",
@@ -49,100 +56,91 @@ const Game = props => {
             }
         }
     }
-    const handleHouseMove = (e, id) => {
-        console.log(id);
+    const handleMovePopUp = (e,id,costM,costG) => {
+        if(id === user.position){
+            return;
+        }
+        setMovingTo({
+            name: id,
+            costM : costM,
+            costG: costG
+        })
+        setIsDeciding(true);
+
+    }
+
+    const handlePayDayPopUp = () => {
+        setIsPayDay(true);
+    }
+
+    const handlePayDay = (e,money) => {
         const temp = {...user};
-            if(id ==="home"){
-                temp.position = "home";
-                temp.teen = true;
-                temp.twins = true;
-                temp.dog = true;
-                if(user.money < 2){
-                    temp.money = 0;
-                }
-                else{
-                    temp.money -= 2;
-                }
-                
-            }
-            else if(id === "car"){
-                temp.position = "car";
-                temp.teen = true;
-                temp.twins = true;
-                temp.dog = true;
-                if(user.money < 1){
-                    temp.money = 0;
-                }
-                else{
-                    temp.money -= 1;
-                }
-                
-            }
-            else if(id === "apartment"){
-                temp.position = "apartment";
-                temp.teen = true;
-                temp.twins = true;
-                temp.dog = true;
-                if(user.money < 4){
-                    temp.money = 0;
-                }
-                else{
-                    temp.money -= 4;
-                }
-            }
-            else if(id === "friend"){
-                temp.position = "friend";
-                temp.teen = true;
-                temp.twins = true;
-                temp.dog = false;
-                if(user.money < 1){
-                    temp.money = 0;
-                }
-                else{
-                    temp.money -= 1;
-                }
-                if(user.goodWill < 1){
-                    temp.goodWill = 0;
-                }
-                else{
-                    temp.goodWill -= 1;
-                }
-                    
-            }
-            else if(id === "hotel"){
-                temp.position = "hotel";
-                temp.teen = false;
-                temp.twins = false;
-                temp.dog = false;
-                if(user.money < 1){
-                    temp.money = 0;
-                }
-                else{
-                    temp.money -= 1;
-                }
-                if(user.goodWill < 2){
-                    temp.goodWill = 0;
-                }
-                else{
-                    temp.goodWill -= 2;
-                }
-                
-            }
-            else if(id === "shelter"){
-                temp.position = "shelter";
-                temp.teen = false;
-                temp.twins = true;
-                temp.dog = false;
-                if(user.money < 2){
-                    temp.money = 0;
-                }
-                else{
-                    temp.money -= 2;
-                }
-                
-            }
+        temp.money += money;
+        temp.paydayLoan ++;
+        temp.loanAmount += money;
+        axios.put(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/user/update/${context.userId}/${context.tcId}`,{updated: temp,choice:{message:`${user.name} accepted a payday loan of ${money} money.`}})
+            .then(res => {
+                console.log("HEYEHEYEHEYEHEYEHEY")
+                setChose(!chose);
+            })
+            .catch(err => console.log(err));
+    }
+
+
+    const handleHouseMove = (e, id,money,goodWill) => {
+        console.log(id);
+        setIsDeciding(false);
+        const temp = {...user};
+        if(user.money < money){
+            temp.money = 0;
+        }
+        else{
+            temp.money -= money;
+        }
+        if(user.goodWill < goodWill){
+            temp.goodWill = 0;
+        }
+        else{
+            temp.goodWill -= goodWill;
+        }
+        if(id ==="home"){
+            temp.position = "home";
+            temp.teen = true;
+            temp.twins = true;
+            temp.dog = true;
+        }
+        else if(id === "car"){
+            temp.position = "car";
+            temp.teen = true;
+            temp.twins = true;
+            temp.dog = true;
+        }
+        else if(id === "apartment"){
+            temp.position = "apartment";
+            temp.teen = true;
+            temp.twins = true;
+            temp.dog = true;
+        }
+        else if(id === "friend"){
+            temp.position = "friend";
+            temp.teen = true;
+            temp.twins = true;
+            temp.dog = false;
+        }
+        else if(id === "hotel"){
+            temp.position = "hotel";
+            temp.teen = false;
+            temp.twins = false;
+            temp.dog = false;
+        }
+        else if(id === "shelter"){
+            temp.position = "shelter";
+            temp.teen = false;
+            temp.twins = true;
+            temp.dog = false;
+        }
         console.log(user);
-        axios.put(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/user/update/${context.userId}/${context.tcId}`,{updated: temp,choice:{message:`${user.name} chose to live in ${id}`}})
+        axios.put(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/user/update/${context.userId}/${context.tcId}`,{updated: temp,choice:{message:`${user.name} chose to live in ${id} and spent ${money} money & ${goodWill} good will.`}})
             .then(res => {
                 console.log("HEYEHEYEHEYEHEYEHEY")
                 setChose(!chose);
@@ -170,15 +168,23 @@ const Game = props => {
     return (
         <div className="row justify-content-around p-5">
             {
-                isDeciding ? <Decision /> : null
+                isDeciding ? <Decision 
+                                handleHouseMove={handleHouseMove} 
+                                name={movingTo.name} 
+                                costM={movingTo.costM}
+                                costG={movingTo.costG}
+                            /> : null
             }
             {
-                tc ? <ToughChoice handleHouseMove={handleHouseMove} users={tc.users} /> :
+                isPayDay ? <PayDay /> : null
+            }
+            {
+                tc ? <ToughChoice handleMovePopUp={handleMovePopUp} users={tc.users} /> :
                         null
             }
             {
                 user ? 
-                    <Profile user={user}/> : null
+                    <Profile user={user} handlePayDayPopUp={handlePayDayPopUp}/> : null
             }
         </div>
     );

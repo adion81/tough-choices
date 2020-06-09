@@ -58,7 +58,7 @@ const ToughChoice = props => {
                                         costYellow={h.costYellow} 
                                         houseHold={h.houseHold}
                                         users={props.users.filter(u => u.position === h.id)}
-                                        handleHouseMove={props.handleHouseMove}
+                                        handleMovePopUp={props.handleMovePopUp}
                                         id={h.id}
                                     />)
             }

@@ -1,10 +1,11 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 import './Admin.css';
 import axios from 'axios';
 import io from 'socket.io-client';
 
 const Admin = props => {
     const [socket] = useState(() => io(`http://${process.env.REACT_APP_IP_ADDRESS}:8000`));
+    const [tcId,settcId] = useState(localStorage.getItem("tcKey")|| "");
     const [tc,setTc] = useState(null);
 
     const handleUpdateTC = (id) => {
@@ -12,11 +13,11 @@ const Admin = props => {
             return;
         }
         else{
-            if(tc._id !== id){
+            if(tcId !== id){
                 return;
             }
             else{
-                axios.get(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/${id}`)
+                axios.get(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/${tcId}`)
                     .then(res => setTc(res.data))
                     .catch(err => console.log(err));
             }
@@ -25,8 +26,8 @@ const Admin = props => {
     const handleDeactivate = (id) => {
         const temp = {...tc};
         temp.active = false;
-        axios.put(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/deactivate/${id}`,temp)
-            .then(res => {
+        axios.put(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/deactivate/${tcId}`,temp)
+            .then(res=> {
                 localStorage.removeItem("tcKey");
             })
             .catch(err => console.log(err))
