@@ -46,7 +46,7 @@ const Game = props => {
             return;
         }
         else{
-            if(tc._id !== id){
+            if(tc.title !== id){
                 return;
             }
             else{
@@ -80,7 +80,7 @@ const Game = props => {
         temp.loanAmount += money;
         axios.put(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/user/update/${context.userId}/${context.tcId}`,{updated: temp,choice:{message:`${user.name} accepted a payday loan of ${money} money.`}})
             .then(res => {
-                console.log("HEYEHEYEHEYEHEYEHEY")
+                setIsPayDay(false);
                 setChose(!chose);
             })
             .catch(err => console.log(err));
@@ -142,8 +142,8 @@ const Game = props => {
         console.log(user);
         axios.put(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/user/update/${context.userId}/${context.tcId}`,{updated: temp,choice:{message:`${user.name} chose to live in ${id} and spent ${money} money & ${goodWill} good will.`}})
             .then(res => {
-                console.log("HEYEHEYEHEYEHEYEHEY")
                 setChose(!chose);
+                socket.emit("updated-user",{id:context.tcId})
             })
             .catch(err => console.log(err));
         
@@ -176,7 +176,7 @@ const Game = props => {
                             /> : null
             }
             {
-                isPayDay ? <PayDay /> : null
+                isPayDay ? <PayDay handlePayDay={handlePayDay} /> : null
             }
             {
                 tc ? <ToughChoice handleMovePopUp={handleMovePopUp} users={tc.users} /> :

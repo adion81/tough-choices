@@ -49,7 +49,7 @@ const ToughChoice = props => {
 
     
     return (
-        <div className="col-lg-8 col-12 d-flex flex-wrap justify-content-around">
+        <div className="col-lg-8 col-12 d-flex flex-wrap justify-content-around text-dark">
             {
                 houses.map((h,i) => <HouseCard  
                                         key={i} 

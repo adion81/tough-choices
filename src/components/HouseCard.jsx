@@ -4,7 +4,7 @@ import Avatar from './Avatar';
 const HouseCard = props => {
     const {title,costGreen, costYellow,houseHold,users,id,handleMovePopUp} = props;
     return (
-        <div onClick={(e) => handleMovePopUp(e,id,costGreen,costYellow)} style={{height: "300px"}}className="card p-0 col-3 mx-1 my-2 mx-lg-2 my-lg-4">
+        <div onClick={handleMovePopUp ? (e) => handleMovePopUp(e,id,costGreen,costYellow) : console.log()} style={{height: "300px"}}className="card p-0 col-3 mx-1 my-2 mx-lg-2 my-lg-4">
             <div className="card-header">
                 <h6 className="card-title">{title}</h6>
             </div>

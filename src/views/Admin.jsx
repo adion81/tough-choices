@@ -1,23 +1,27 @@
-import React,{useState, useEffect} from 'react';
+import React,{useState} from 'react';
 import './Admin.css';
+import ToughChoice from '../components/ToughChoice';
 import axios from 'axios';
 import io from 'socket.io-client';
 
 const Admin = props => {
     const [socket] = useState(() => io(`http://${process.env.REACT_APP_IP_ADDRESS}:8000`));
-    const [tcId,settcId] = useState(localStorage.getItem("tcKey")|| "");
+    const [tcId] = useState(localStorage.getItem("tcKey")|| "");
     const [tc,setTc] = useState(null);
+    const [title,setTitle] = useState("");
+    const [error, setError] = useState("");
 
     const handleUpdateTC = (id) => {
         if(tc === null){
             return;
         }
         else{
-            if(tcId !== id){
+            if(tc.title !== id){
+                console.log("Something went wrong")
                 return;
             }
             else{
-                axios.get(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/${tcId}`)
+                axios.get(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/${id}`)
                     .then(res => setTc(res.data))
                     .catch(err => console.log(err));
             }
@@ -50,12 +54,24 @@ const Admin = props => {
     }
 
     const handleNewTC = () => {
-        axios.post("http://localhost:8000/api/tc")
-            .then(res => {
-                localStorage.setItem("tcKey",res.data._id);
-                setTc(res.data)
-            })
-            .catch(err => console.log(err));
+        if(title.length === 0){
+            setError("Please enter a title")
+        }
+        else{
+            setError("");
+            axios.post("http://localhost:8000/api/tc",{title})
+                .then(res => {
+                    if(res.data.msg === "exists"){
+                        setError("This scenario already exsists");
+                    }
+                    else{
+                        localStorage.setItem("tcKey",res.data.title);
+                        setTc(res.data)
+    
+                    }
+                })
+                .catch(err => console.log(err));
+        }
     }
     return (
         <div style={style}>
@@ -96,11 +112,18 @@ const Admin = props => {
                     <legend className="legend">Controls</legend>
                     {
                         tc === null ? 
-                            <button   
-                                className="btn btn-info mx-auto d-block" 
-                                style={{boxShadow:"2px 2px 2px #99e6d8"}}
-                                onClick={handleNewTC}
-                            >Create Tough Choice</button> :
+                            
+                            <div className="form-group text-center">
+                                <label>Unique Tough Choice Title: </label>
+                                <input className="form-control" type="text" onChange={(e) => setTitle(e.target.value)} value={title} /><br></br>
+                                <span className="text-danger bg-white">{error.length > 0? error: ""}</span>
+                                <button   
+                                    className="btn btn-info mx-auto d-block" 
+                                    style={{boxShadow:"2px 2px 2px #99e6d8"}}
+                                    onClick={handleNewTC}
+                                >Create Tough Choice</button> 
+
+                            </div> :
                             <button 
                                 className="btn btn-danger mx-auto d-block" 
                                 style={{boxShadow:"2px 2px 2px #99e6d8"}}
@@ -110,7 +133,7 @@ const Admin = props => {
                     <table id="admin">
                         <tr >
                             <td>Access Code:</td>
-                            <td>{ tc === null ? "Not Active": tc._id }</td>
+                            <td>{ tc === null ? "Not Active": tc.title }</td>
                         </tr>
                         <tr>
                             <td># of Participants</td>
@@ -122,6 +145,9 @@ const Admin = props => {
                 </fieldset>
 
             </div>
+            {
+                tc ? <ToughChoice handleMovePopUp={console.log("hello")} users={tc.users}/> : null
+            }
 
         </div>  
     );

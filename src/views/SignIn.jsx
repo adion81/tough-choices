@@ -36,26 +36,33 @@ const SignIn = props => {
                     console.log(res.data.msg)
                 }
                 else{
-                    console.log(res.data.userId)
-                    localStorage.setItem("tcKey",accessCode);
-                    localStorage.setItem("userKey",res.data.userId);
-                    context.setUserId(res.data.userId);
-                    context.setTcId(accessCode);
-                    socket.emit("added-user",{id:accessCode})
-                    setUser({
-                        name:"",
-                        initials:"",
-                        color:"#ff0000"
-                    })
-                    setAccessCode("")
-                    navigate("/scenario")
+                    if(!res.data.tc.active){
+                        alert("This scenario is not active.")
+                    }
+                    else{
+                        console.log(res.data.userId)
+                        localStorage.setItem("tcKey",accessCode);
+                        localStorage.setItem("userKey",res.data.userId);
+                        context.setUserId(res.data.userId);
+                        context.setTcId(accessCode);
+                        socket.emit("added-user",{id:accessCode})
+                        setUser({
+                            name:"",
+                            initials:"",
+                            color:"#ff0000"
+                        })
+                        setAccessCode("")
+                        navigate("/scenario")
+
+                    }
 
                 }
             })
             .catch(err => {
-                if(err.response.status === 404){
-                    console.log("Please enter a valid code");
-                }
+                console.log(err.response)
+                // if(err.response.status === 404){
+                //     console.log("Please enter a valid code");
+                // }
                 console.log(err)});
     }
     const handleInput = (e) => {
