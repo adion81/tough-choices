@@ -6,7 +6,7 @@ const Profile = props => {
 
     const signOut = (e) => {
         localStorage.clear();
-        navigate("/");
+        navigate("/tough-choices");
     }
     const { user } = props;
     return (

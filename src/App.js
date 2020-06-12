@@ -15,9 +15,9 @@ function App() {
       
       <TCContext.Provider value={{tcId,setTcId,userId,setUserId}}>
         <Router>
-            <SignIn path="/" />
-            <Admin path="/facilitator" />
-            <Game path="/scenario" />
+            <SignIn path="tough-choices/" />
+            <Admin path="tough-choices/facilitator" />
+            <Game path="tough-choices/scenario" />
         </Router>
 
       </TCContext.Provider>

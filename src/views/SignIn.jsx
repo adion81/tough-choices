@@ -52,7 +52,7 @@ const SignIn = props => {
                             color:"#ff0000"
                         })
                         setAccessCode("")
-                        navigate("/scenario")
+                        navigate("/tough-choices/scenario")
 
                     }
 

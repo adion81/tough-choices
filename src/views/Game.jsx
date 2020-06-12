@@ -36,26 +36,41 @@ const Game = props => {
             choices:[]
         }
     ]);
-    socket.on("update-tc", data => {
-        console.log(data.id)
-        handleUpdateTC(data.id)
-    })
 
-    const handleUpdateTC = (id) => {
-        if(tc === null){
-            return;
-        }
-        else{
-            if(tc.title !== id){
+    useEffect(() => {
+        socket.on("update-tc", data => {
+            console.log(data.id)
+            if(context.tcId === null){
                 return;
             }
             else{
-                axios.get(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/${id}`)
-                    .then(res => setTC(res.data))
-                    .catch(err => console.log(err));
+                if(context.tcId !== data.id){
+                    return;
+                }
+                else{
+                    axios.get(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/${data.id}`)
+                        .then(res => setTC(res.data))
+                        .catch(err => console.log(err));
+                }
             }
-        }
-    }
+        })
+    },[socket,context.tcId])
+
+    // const handleUpdateTC = (id) => {
+    //     if(tc === null){
+    //         return;
+    //     }
+    //     else{
+    //         if(tc.title !== id){
+    //             return;
+    //         }
+    //         else{
+    //             axios.get(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/${id}`)
+    //                 .then(res => setTC(res.data))
+    //                 .catch(err => console.log(err));
+    //         }
+    //     }
+    // }
     const handleMovePopUp = (e,id,costM,costG) => {
         if(id === user.position){
             return;
@@ -81,6 +96,7 @@ const Game = props => {
         axios.put(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/user/update/${context.userId}/${context.tcId}`,{updated: temp,choice:{message:`${user.name} accepted a payday loan of ${money} money.`}})
             .then(res => {
                 setIsPayDay(false);
+                socket.emit("updated-user",{id:context.tcId});
                 setChose(!chose);
             })
             .catch(err => console.log(err));

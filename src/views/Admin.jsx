@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import './Admin.css';
 import ToughChoice from '../components/ToughChoice';
 import axios from 'axios';
@@ -10,6 +10,11 @@ const Admin = props => {
     const [tc,setTc] = useState(null);
     const [title,setTitle] = useState("");
     const [error, setError] = useState("");
+    useEffect(() => {
+        axios.get(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/${tcId}`)
+                    .then(res => setTc(res.data))
+                    .catch(err => console.log(err));
+    },[tcId])
 
     const handleUpdateTC = (id) => {
         if(tc === null){
