@@ -10,7 +10,7 @@ import io from 'socket.io-client';
 
 
 const Game = props => {
-    const [socket] = useState(() => io(`http://${process.env.REACT_APP_IP_ADDRESS}:8000`));
+    const [socket] = useState(() => io(`http://18.216.108.30`));
     const [chose,setChose] = useState(false);
     const context = useContext(TCContext);
     const [tc,setTC] = useState(null);
@@ -48,7 +48,7 @@ const Game = props => {
                     return;
                 }
                 else{
-                    axios.get(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/${data.id}`)
+                    axios.get(`http://18.216.108.30/api/tc/${data.id}`)
                         .then(res => setTC(res.data))
                         .catch(err => console.log(err));
                 }
@@ -65,7 +65,7 @@ const Game = props => {
     //             return;
     //         }
     //         else{
-    //             axios.get(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/${id}`)
+    //             axios.get(`http://18.216.108.30:8000/api/tc/${id}`)
     //                 .then(res => setTC(res.data))
     //                 .catch(err => console.log(err));
     //         }
@@ -93,7 +93,7 @@ const Game = props => {
         temp.money += money;
         temp.paydayLoan ++;
         temp.loanAmount += money;
-        axios.put(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/user/update/${context.userId}/${context.tcId}`,{updated: temp,choice:{message:`${user.name} accepted a payday loan of ${money} money.`}})
+        axios.put(`http://18.216.108.30/api/tc/user/update/${context.userId}/${context.tcId}`,{updated: temp,choice:{message:`${user.name} accepted a payday loan of ${money} money.`}})
             .then(res => {
                 setIsPayDay(false);
                 socket.emit("updated-user",{id:context.tcId});
@@ -156,7 +156,7 @@ const Game = props => {
             temp.dog = false;
         }
         console.log(user);
-        axios.put(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/user/update/${context.userId}/${context.tcId}`,{updated: temp,choice:{message:`${user.name} chose to live in ${id} and spent ${money} money & ${goodWill} good will.`}})
+        axios.put(`http://18.216.108.30/api/tc/user/update/${context.userId}/${context.tcId}`,{updated: temp,choice:{message:`${user.name} chose to live in ${id} and spent ${money} money & ${goodWill} good will.`}})
             .then(res => {
                 setChose(!chose);
                 socket.emit("updated-user",{id:context.tcId})
@@ -167,7 +167,7 @@ const Game = props => {
     }
 
     useEffect(()=> {
-        axios.get(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/${context.tcId}`)
+        axios.get(`http://18.216.108.30/api/tc/${context.tcId}`)
             .then(res => {
                 console.log(res.data);
                 setTC(res.data);

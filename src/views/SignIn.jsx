@@ -9,7 +9,7 @@ const SignIn = props => {
 
     const context = useContext(TCContext);
     console.log(context);
-    const [socket] = useState(() => io(`http://${process.env.REACT_APP_IP_ADDRESS}:8000`));
+    const [socket] = useState(() => io(`http://18.216.108.30`));
     const [user,setUser] = useState({
         name:"",
         initials: "",
@@ -27,7 +27,7 @@ const SignIn = props => {
         e.preventDefault();
         user.money = Math.floor(Math.random()*20) + 18;
         user.goodWill = Math.floor(Math.random()*20) + 18;
-        axios.post(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/user/${accessCode}`,user)
+        axios.post(`http://18.216.108.30/api/tc/user/${accessCode}`,user)
             .then(res => {
                 if(res.data.errors){
                     console.log(res.data.errors)

@@ -5,13 +5,13 @@ import axios from 'axios';
 import io from 'socket.io-client';
 
 const Admin = props => {
-    const [socket] = useState(() => io(`http://${process.env.REACT_APP_IP_ADDRESS}:8000`));
+    const [socket] = useState(() => io(`http://18.216.108.30`));
     const [tcId] = useState(localStorage.getItem("tcKey")|| "");
     const [tc,setTc] = useState(null);
     const [title,setTitle] = useState("");
     const [error, setError] = useState("");
     useEffect(() => {
-        axios.get(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/${tcId}`)
+        axios.get(`http://18.216.108.30/api/tc/${tcId}`)
                     .then(res => setTc(res.data))
                     .catch(err => console.log(err));
     },[tcId])
@@ -26,7 +26,7 @@ const Admin = props => {
                 return;
             }
             else{
-                axios.get(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/${id}`)
+                axios.get(`http://18.216.108.30/api/tc/${id}`)
                     .then(res => setTc(res.data))
                     .catch(err => console.log(err));
             }
@@ -35,7 +35,7 @@ const Admin = props => {
     const handleDeactivate = (id) => {
         const temp = {...tc};
         temp.active = false;
-        axios.put(`http://${process.env.REACT_APP_IP_ADDRESS}:8000/api/tc/deactivate/${tcId}`,temp)
+        axios.put(`http://18.216.108.30/api/tc/deactivate/${tcId}`,temp)
             .then(res=> {
                 localStorage.removeItem("tcKey");
             })
@@ -64,7 +64,7 @@ const Admin = props => {
         }
         else{
             setError("");
-            axios.post("http://localhost:8000/api/tc",{title})
+            axios.post("http://18.216.108.30/api/tc",{title})
                 .then(res => {
                     if(res.data.msg === "exists"){
                         setError("This scenario already exsists");
